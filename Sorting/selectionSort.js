@@ -1,5 +1,21 @@
 var shuffleArray = require('./shuffleArray.js');
 
+/**
+ * [selectionSort - this algorithm works by creating an array index that represents 
+ * an in place sort. This index starts at zero and iterates to the arrays length.
+ * At each step of the iteration the algorithm locates the smallest element to fill
+ * the presorted array. 
+ * Imagine the x is the index that represents the end of the presorted array, and
+ * that the 'o' characters are the presorted indices. Each iteration that new 'o'
+ * is filled with the smallest remaining number in the array.
+ * [x---]
+ * [ox--]
+ * [oox-]
+ * [ooox]
+ * [oooo]
+ * @param  { Array } array [The array to sort.]
+ * @return { Array }       [The sorted array. This returns a new array. ]
+ */
 function selectionSort(array) {
     var new_array = array.slice(0);
 
