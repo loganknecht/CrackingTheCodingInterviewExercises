@@ -1,3 +1,9 @@
+// Insertion sort works by iterating through the array and sorting as it 
+// iterates.Each forward iteration of 'i' will cause it to iterate backwards 
+// from its current iteration and check each previous index if it's less than 
+// the sorting predicate used. Then inserts it into the correct spot. This can 
+// be done fromthe tail end of the array as well, or sorted from big to small, 
+// in the same fashion.
 var shuffleArray = require('./shuffleArray.js');
 
 function insertionSort(array) {

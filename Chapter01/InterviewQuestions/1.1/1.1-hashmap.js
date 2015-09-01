@@ -38,8 +38,7 @@ function incrementCharacterCount(characterCountArray, character) {
 // returns true if characterCountArray is less than one for the character passed in
 // returns false if characterCountArray is greater than 1 for the character passed in
 function validateCharacterCount(characterCountArray, character) {
-    if(typeof(characterCountArray[character]) == "number" 
-        && characterCountArray[character] > 1) {
+    if(typeof(characterCountArray[character]) == "number" && characterCountArray[character] > 1) {
         console.log('character: ' + character);
         console.log('# of occurrences: ' + characterCountArray[character]);
         console.log('typeof: ' + typeof(characterCountArray[character]));
