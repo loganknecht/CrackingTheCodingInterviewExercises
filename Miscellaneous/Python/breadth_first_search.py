@@ -1,17 +1,16 @@
-# Level-order?
-# I just know this as a queue
-
 # Python Standard Libraries
 # N/A
 # Third-Party Libraries
 # N/A
 # Custom Libraries
-from node import Node
 import trees
 
 
 def breadth_first_search(node_queue):
     """Sometimes this is called 'level-order' searching
+
+    Arguments:
+        node_queue (List of Node): a FIFO style array
     """
 
     can_current_node_be_processed = (len(node_queue) > 0)
