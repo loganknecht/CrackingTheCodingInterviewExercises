@@ -1,3 +1,6 @@
+"""Based on
+http://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/
+"""
 # Python Standard Libraries
 # N/A
 # Third-Party Libraries
@@ -8,7 +11,16 @@ import trees
 
 
 def pre_order_search(current_node):
-    """Depth first search using left associativity"""
+    """Uses of Preorder
+
+    Preorder traversal is used to create a copy of the tree.
+
+    Preorder traversal is also used to get prefix expression on of an
+        expression tree.
+
+    Please see http://en.wikipedia.org/wiki/Polish_notation to know why
+        prefix expressions are useful.
+    """
     is_node_valid = (current_node is not None and
                      type(current_node) is node.Node)
     has_left_node = (is_node_valid and
@@ -25,7 +37,13 @@ def pre_order_search(current_node):
 
 
 def in_order_search(current_node):
-    """Depth first search using left associativity"""
+    """Uses of Inorder
+    In case of binary search trees (BST), Inorder traversal gives nodes
+        in non-decreasing order.
+
+    To get nodes of BST in non-increasing order, a variation of Inorder
+        traversal where Inorder traversal is reversed, can be used.
+    """
     is_node_valid = (current_node is not None and
                      type(current_node) is node.Node)
     has_left_node = (is_node_valid and
@@ -42,7 +60,18 @@ def in_order_search(current_node):
 
 
 def post_order_search(current_node):
-    """Depth first search using left associativity"""
+    """Uses of Postorder
+
+    Postorder traversal is used to delete the tree.
+
+    Please see the question for deletion of tree for details.
+
+    Postorder traversal is also useful to get the postfix expression of
+        an expression tree.
+
+    Please see http://en.wikipedia.org/wiki/Reverse_Polish_notation to
+        for the usage of postfix expression.
+    """
     is_node_valid = (current_node is not None and
                      type(current_node) is node.Node)
     has_left_node = (is_node_valid and
