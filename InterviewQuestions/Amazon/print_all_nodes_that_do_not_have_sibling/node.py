@@ -3,21 +3,23 @@
 # Third-Party Libraries
 # N/A
 # Custom Libraries
-from node import Node
+# N/A
 
-"""
-TODO: Make a better tree generator
 
-Variations of tree types will always be using this tree
+class Node(object):
+    """
+    Attributes:
+        left (Node): left child
+        right (Node): right child
+        value (Integer): value in the node
+    """
 
-             1
-            / \
-       2           3
-      / \         / \
-    4     5     6     7
-   / \   / \   / \   / \
-  8  9 10  11 12 13 14 15
-"""
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+# ------------------------------------------------------------------------------
 
 
 def generate_unbalanced_left_binary_tree():

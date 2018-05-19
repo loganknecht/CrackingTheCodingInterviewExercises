@@ -1,0 +1,279 @@
+1. Work Experience
+
+a.	Describe in detail a favorite or challenging project that you have developed recently.
+
+My recent efforts as a part of the Splunk Application Certification team were very fun and challenging, from both architectural and programming perspective. The goal of this process was to accept third-party software developed by our users and provide a mechanism to vet the code for safety, security, and best practices.
+
+Initially we built a small command line tool, called "AppInspect" with Python to solve this problem, but had difficulties scaling the process. As a result we decided to build a web service using Flask and Flask Rest Framework in order to accept independent requests and and return some reporting output of the results.
+
+This worked well, but we were being bottle-necked by running one process at a time, so we decided to build out a queuing service for our vetting requests and migrate to a token based retrieval system such that requests could be queued effectively. Then, leveraging docker we built out a scalable configuration that would allow workers to be created as needed.
+
+This was nice, but we needed a front end to help less sophistacted users internally perform the vetting process so we used react to create a front-end interface that pointed to the api we built for the vetting requests.
+
+All of this ended up being migrated to Amazon Web Services and eventually docker swarm using cloud formation, and some opinionated configurations such that we could be more secure from denial of service issues we had experienced.
+
+At the end of it we managed to build a tool, and a process that was automatically vetting 25% of the submitted Splunk Applications, and of the remaining percentage limited verification of the remainder was required in order to pass them. At that point I was transitioned to help on a new team that I can't disclose information about.
+
+b.	Explain the architectural decisions that were made and why.
+
+I think the biggest architectural decision that mattered, amongst the many that were there, was the decision to build a fault tolerant and a scalabe system by leveraging rabbitMQ and celery for our queuing system with requests. Because this process was quickly integrated into our business we had to find a way to support multiple different parties, in rapid succession, and had to be able to reliably retrieve the information, even with increasing request load.
+
+By decoupling the work and the submission/management of requests we were able to effectively balance the load of work without much issue. Furthermore, by leveraging AWS elastic load balancers, auto scaling, and docker swarm, it was trivial to scale to heavier traffic as needed.
+
+c.	Describe some challenges and how you overcame them.
+
+Interestingly enough, once we were far enough down the road of implementation it was process and organization that started to become a bottleneck. The reason for this is because the product was initially developed in a much smaller scope, and the business requirements for it had scaled without addressing what the goal was. For example, our tool was meant as a mechanism for determining our organization's standards for what a good Splunk App was. However, it was also heavily relied on by our cloud team to vet Splunk Apps for our internally hosted infrastructre that we provisioned for clients. These two concerns: publicly distributed apps and apps installed on internally provisioned hardware, created conflicts for what was a "fail" and "pass" in Application Certification.
+
+Eventually I stepped back with a couple of other colleagues and we charted out the entire workflow for our vetting process, which had become incredibly convoluted, and spent time providing alternative workflows and solutions that would stream line the process. For example we managed to fix a huge issue with request deduplication for our process. Previously it was incredibly difficult to know if the issue was requested or if the work was done. Instead what we ended up doing was creating a JIRA project that would contain the information of the Splunk App, link to specific versions of the Splunk App that had been reviewed, and then provide reports inline with the JIRA ticket. Also interesting is that this was our halfway solution to a more durable process overall as we were constrained by the requirement that information needed to stay within the JIRA system.
+
+d.	What was your role on this project?
+
+I began this project as a new member of Splunk, and one of the first members of the Application Certification team. My role in the organization is as an independent contributor who participated and implemented each step of the Application Certification growth along the way. Between Python, AWS, Docker, and process reconciliation. Near the end of this project I was promoted within the organization for my efforts.
+
+e.	What were some lessons learned.
+
+There were a lot of lessons learned on this project. I think one of my bigger experiences was that any process can be just as much of a bottleneck as the actual code running behind it. So, if you're trying to be efficient it would benefit the most to focus on key areas when growing a project. Inputs, outputs, customer interfaces, manual operations, etc. This project was a victim of its success in many ways, so scaling the process to reflect the business requirements may have benefited my team.
+
+One aspect of the organization that I think needs to be reflected on is that we continually chose to adopt prototype solutions for this process rather than flesh out what we really needed and implement closer to that solution. In many ways our reporting solution was a very big part of this process, but little thought was given to it and how to provide information back, so our output suffered in presentation. It was not horrible, but if we had more structure and consistency for managing this information I believe it would have greatly helped the end result.
+
+Lastly, I think there was great reluctance on my team to use organization built solutions to simplify some of the work we were doing. Splunk has an internal tool called Chaperone for managing workflows. Application Certification itself is largely a process, or a workflow. Because of that I made a point to proof of concept some implementations of our process in Chapperone showing how we could optimize our process or simplify certain aspects. When I displayed this to my team, and despite its benefits they decided against working in that direction. Ideally we should have had the confidence to move in the direction of a tool that our organization was already behind, aligned on that.
+
+2. If you had a chance to give a talk at a generic conference for software developers, what topic would you present on?
+
+I think I would like to talk about a few things:
+
+- Learning
+    - How to learning
+    - How to fail
+- Standards
+    - Personally
+    - Team
+    - Organization
+
+The topic I would probably select is a presentation about standards. The reason for this is because it is very often in working with other people that I find much of the difficulty is aligning on standards in code, process, and review. As a result this causes more issue than are needed, and productivity is lost on the team.
+
+For example, one issue I've encountered is peers being frustrated by code quality submitted by other peers. Much of that solution could be simplified if the team agreed to use a simple auto-formatter in order to make the code consistent. I imagine this is why `go fmt` is a popular feature of Go. Additionally it benefits a team greatly to make sure code is documented and functionality is clear. But how does a team member know their documentation is enough? With clear standards that shouldn't be a problem. For this I would likely provide suggested solutions I've used in these areas.
+
+Additionally when making pull requests for code review there are people frustrated by how people submit their code. Many concerns are, commit messages being unclear, too many commits such that it creates too much noise, branching strategies that make it hard to understand feature integration and product releases, etc. If efforts were made to standardize on this then that frustration can be turned into productivity and code could be quicker merged.
+
+I also think that I would like to talk about what it means to reflect on work. I've experienced teams or organizations that do not step back from a problem and ask "why are we doing this?" often enough, and as a result sub-optimal solutions are being built. If the team can step back, ask what they're doing, what the level of quality for that work is expected, and what the output is expected to be in the form of, then the team could standardize on how best to proceed towards that solution instead of executing multiple different efforts at once that may not necessarily overlap.
+
+
+3. Code Review this sample code:
+
+    [RoutePrefix("api/spacex/rockets")]
+    public class RocketController
+    {
+        private readonly IRocketService RocketService;
+        private readonly IreuseRocketService reuseRocketService;
+
+        public RocketController(IRocketService rocketService,
+                                    IreuseRocketService reuseService)
+        {
+            RocketService = rocketService;
+            reuseRocketService = reuseService;
+        }
+
+        [Route("{rocketID:int}")]
+        [HttpGet]
+        public RocketDTO GetRocket(int rocketID)
+        {
+            return RocketService.GetRocket(rocketID);
+        }
+
+        [Route("")]
+        [HttpPost]
+        public int CreateRocket(NewRocketDTO newRocketDTO)
+        {
+            return RocketService.CreateRocket(newRocketDTO);
+        }
+
+        [Route("")]
+        [HttpPut]
+        public int UpdateRocket(UpdateRocketDTO updateRocketDTO)
+        {
+            return RocketService.UpdateRocket(updateRocketDTO);
+        }
+
+        [Route("{rocketID:int}/reuse")]
+        [HttpPost]
+        public RocketDTO MakeResusableRocket(int rocketID)
+        {
+            var rocket = RocketService.GetRocket(rocketID);
+            if(rocket.HasFlown == true){
+                if(rocket.HasLanded == true){
+                    if(rocket.IsRefurbished){ 
+                        return reuseRocketService.ReuseRocket(rocketID);
+                    }
+                }
+                return rocket;
+            }
+            return rocket;
+        }
+    }
+
+RocketController depends on:
+- IRocketService (Generalized interface)
+    - Used in GetRocket method
+    - Used in CreateRocket method
+    - Used in UpdateRocket method
+- IreuseRocketService (Generalized interface)
+    - Used in MakeResusableRocket method
+
+Four routes:
+GET /api/spacex/rockets/{rocketID:int}
+POST /api/spacex/rockets/
+PUT /api/spacex/rockets/
+POST /api/spacex/rockets/{rocketID:int}/reuse
+
+If interested in generating a list of rockets, may benefit from adding a GET /api/spacex/rockets that returns a full list of rockets.
+
+I do not see anything configured for authentication/authorization, so if these endpoints need to be configured I would make sure that these are appropriately secured.
+
+I would suggest changing the cyclomatic complexity of "MakeResusableRocket" to be simpler. It seems that all it is checking for is: has the rocket has been flown, landed, and refurbished? Then it it it has it returns that, otherwise it defaults to returning the rocket itself.
+
+I don't have enough context about the business requirement, but I am under the impression that MakeResusableRocket should also be catching issues if it is not refurbished. I would ask who needs this to clarify what should happen from a product expectation when the rocket cannot be used. For instance, failing loud and fast is sometimes a good idea, so in this case if the product owner wanted the information to surface loudly then I would add an exception called `NotRefurbishedRocket` and throw that instead of returning the rocket as a default.
+
+Because this is a web request, I am lead to believe that some type of text output is desired on failures, so I would likely configure this endpoint to return a 503 error stating that the "Service is Unavailable because the resource was not refurbished.".
+
+```csharp
+public RocketDTO MakeResusableRocket(int rocketID)
+{
+    var rocket = RocketService.GetRocket(rocketID);
+    if(rocket.HasFlown == true &&
+        rocket.HasLanded == true && 
+        rocket.IsRefurbished){ 
+        return reuseRocketService.ReuseRocket(rocketID);
+    }
+
+    // TODO: Determine what failure should be and execute. Likely return 503
+}
+```
+
+4. How can you optimize this? Pseudocode is fine:
+
+var partList = [..., 'booster', 'grid fin',...]
+var otherPartList = [..., 'landing leg', 'booster',...]
+
+for (int i = 0; i < partList.Length; i++)
+{
+    for (int j = 0; j < otherPartList.Length; j++)
+    {
+      	if (partList[i].Equals(otherPartList[j]))
+        {
+           	Console.WriteLine(partList[i]);
+        }
+    }
+}
+
+a. What did you do and why is this faster?
+
+You can optimize this for readability, performance, operations, lines of code. It depends on what the requestor is asking for in regards to optimization. In this case I am making the assumption that run-time is the concern here. Based on speed and expediency I coded this up in Python and using the timeit module I ran a couple of implementations to proof it out.
+
+```python
+def get_original_intersection():
+    partList = ["booster", "grid fin"]
+    otherPartList = ["landing leg", "booster"]
+
+    intersect = []
+    for part in partList:
+        for otherPart in otherPartList:
+            if part == otherPart:
+                # print "{}".format(part)
+                # Instead of printing, we'll just append it
+                intersect.append(part)
+
+
+def get_simple_intersection():
+    partList = ["booster", "grid fin"]
+    otherPartList = ["landing leg", "booster"]
+    return list(set(partList) & set(otherPartList))
+
+
+def get_list_comprehension():
+    partList = ["booster", "grid fin"]
+    otherPartList = ["landing leg", "booster"]
+    return [part
+            for part in partList
+            if part in otherPartList]
+
+if __name__ == "__main__":
+    import timeit
+    original_setup = "from __main__ import get_original_intersection"
+    simple_setup = "from __main__ import get_simple_intersection"
+    list_comprehension_setup = "from __main__ import get_list_comprehension"
+
+    print "Original intersection time: {}".format(timeit.timeit("get_original_intersection()", setup=original_setup))
+    print "Simple intersection time: {}".format(timeit.timeit("get_simple_intersection()", setup=simple_setup))
+    print "List comprehension intersection time: {}".format(timeit.timeit("get_list_comprehension()", setup=list_comprehension_setup))
+```
+
+The output for this was:
+```bash
+╰─$ python problem.py
+Original intersection time: 0.976487874985
+Simple intersection time: 1.2966940403
+List comprehension intersection time: 0.699340105057
+```
+
+Because of this my suggestion would be to optimize this intersection using Python list comprehensions. Additionally this also improves readability and lines of code, so it's a win-win-win.
+
+5. Arrange 3 squares below as 100x100 px squares, horizontally. In order, color them Red, Green and Blue
+
+<!doctype html>
+<html>
+    <head>
+        <title>Fun With Boxes</title>
+    </head>
+    <body>
+    <h1>Interview</h1>
+    <h2>Instructions:</h2>
+    <p>3 Squares Below (Red, Green, Blue)</p>
+
+    <!-- Arrange squares here -->
+
+    </body>
+</html>
+
+SOLUTION:
+```html
+<!doctype html>
+<html>
+
+<head>
+    <title>Fun With Boxes</title>
+    <style>
+    .square {
+        display: inline-flex;
+        height: 100px;
+        width: 100px;
+    }
+
+    .red {
+        background-color: rgba(255, 0, 0, 1);
+    }
+
+    .green {
+        background-color: rgba(0, 255, 0, 1);
+    }
+
+    .blue {
+        background-color: rgba(0, 0, 255, 1);
+    }
+    </style>
+</head>
+
+<body>
+    <h1>Interview</h1>
+    <h2>Instructions:</h2>
+    <p>3 Squares Below (Red, Green, Blue)</p>
+    <!-- Arrange squares here -->
+    <div class="container">
+        <div class="square red"></div>
+        <div class="square green"></div>
+        <div class="square blue"></div>
+    </div>
+</body>
+
+</html>
+```
